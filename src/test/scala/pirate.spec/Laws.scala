@@ -1,7 +1,7 @@
 package pirate.spec
 
 import scalaz._, Scalaz._
-import org.scalacheck.{Arbitrary, Gen, Prop, Properties}, Prop.forAll
+import org.scalacheck.{Arbitrary, Prop, Properties}, Prop.forAll
 
 /* ripped from scalaz-scalacheck-binding due to binary compatability issues */
 
@@ -163,7 +163,8 @@ object Laws {
     def rightPlusIdentity[F[_], X](implicit f: PlusEmpty[F], afx: Arbitrary[F[X]], ef: Equal[F[X]]) =
       forAll(f.plusEmptyLaw.rightPlusIdentity[X] _)
 
-    def laws[F[_]](implicit F: PlusEmpty[F], afx: Arbitrary[F[Int]], af: Arbitrary[Int => Int], ef: Equal[F[Int]]) = new Properties("plusEmpty") {
+    def laws[F[_]](implicit F: PlusEmpty[F], afx: Arbitrary[F[Int]], ef: Equal[F[Int]]) = new Properties("plusEmpty") {
+
       include(plus.laws[F])
       include(monoid.laws[F[Int]](F.monoid[Int], implicitly, implicitly))
       property("left plus identity") = leftPlusIdentity[F, Int]
