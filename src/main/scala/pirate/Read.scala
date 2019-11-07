@@ -1,6 +1,9 @@
 package pirate
 
-import scalaz._, Scalaz._
+import scalaz._
+import Scalaz._
+import shapeless.ProductTypeClass
+
 import scala.util.Try
 
 /**
@@ -180,7 +183,8 @@ object Read extends shapeless.ProductTypeClassCompanion[Read] {
     def append(p1: Read[A], p2: => Read[A]): Read[A] = p1 ||| p2
   }
 
-  implicit def ReadTypeClass: shapeless.ProductTypeClass[Read] = new shapeless.ProductTypeClass[Read] {
+  override val typeClass : ProductTypeClass[Read] = new shapeless.ProductTypeClass[Read] {
+
     import shapeless._
 
     def emptyProduct =
@@ -192,6 +196,7 @@ object Read extends shapeless.ProductTypeClassCompanion[Read] {
     def project[F, G](instance: => Read[G], to : F => G, from : G => F) =
       instance.map(from)
   }
+
 }
 
 sealed trait ReadError

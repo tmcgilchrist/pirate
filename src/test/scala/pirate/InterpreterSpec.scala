@@ -1,9 +1,12 @@
 package pirate
 
-import org.scalacheck.{Arbitrary, Gen}, Arbitrary.arbitrary
+import org.scalacheck.{Arbitrary, Gen}
+import Arbitrary.arbitrary
 import Pirate._
 import pirate.internal._
-import scalaz._, Scalaz._
+import scalaz._
+import Scalaz._
+import org.specs2.matcher.{Expectable, ShouldExpectable}
 
 sealed trait TestCommand
 case class TestWrapper(cmd: TestCommand)
@@ -183,15 +186,25 @@ class InterpreterSpec extends spec.Spec { def is = s2"""
     "first" :: "second" :: "third" :: Nil, DefaultPrefs()) must_== (("first" :: "second" :: "third" :: Nil) -> ().right)
 
   case class LongNameString(s: String)
-  implicit def NonEmptyStringArbitrary: Arbitrary[LongNameString] = Arbitrary(
-    (arbitrary[Char] tuple arbitrary[String].filter(!_.contains("="))).map { case (c, s) => LongNameString(c.toString + s) }
-  )
 
-  implicit def NameArbitrary: Arbitrary[Name] = Arbitrary(
+  override implicit def akaShould[T](tm: Expectable[T]): ShouldExpectable[T] = super.akaShould(tm)
+
+  implicit def NonEmptyStringArbitrary: Arbitrary[LongNameString] =
+    Arbitrary {
+      for {
+        c <- arbitrary[Char]
+        t <- arbitrary[String].filter(!_.contains("="))
+      } yield LongNameString(c.toString + t)
+    }
+
+  implicit def NameArbitrary: Arbitrary[Name] = Arbitrary {
     Gen.oneOf(
       arbitrary[Char].map(ShortName),
       arbitrary[LongNameString].map(_.s).map(LongName),
-      (arbitrary[Char] tuple arbitrary[LongNameString].map(_.s)).map { case (c, s) => BothName(c, s) }
+      for {
+        c <- arbitrary[Char]
+        t <- arbitrary[LongNameString].map(_.s)
+      } yield BothName(c, t)
     )
-  )
+  }
 }

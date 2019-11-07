@@ -81,7 +81,7 @@ class ReadSpec extends spec.Spec { def is = s2"""
   Read.of[java.net.URL]
   Read.of[Option[String]]
 
-  import Read.auto._
+//  import Read.auto._
 
   Read.of[(Int, Int)]
   Read.of[(String, Int)]
