@@ -20,7 +20,7 @@ jobs:
       - checkout
       - restore_cache:
           # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
-          key: sbt-cache
+          key: pirate-{{ checksum "build.sbt" }}
       - run:
           name: Compile
           command: cat /dev/null | ./sbt clean compile
@@ -28,7 +28,7 @@ jobs:
           name: Test
           command: cat /dev/null | ./sbt test
       - save_cache:
-          key: sbt-cache
+          key: pirate-{{ checksum "build.sbt" }}
           paths:
             - "~/.ivy2/cache"
             - "~/.sbt"
