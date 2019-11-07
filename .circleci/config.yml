@@ -23,7 +23,10 @@ jobs:
           key: sbt-cache
       - run:
           name: Compile
-          command: cat /dev/null | ./sbt clean compile test
+          command: cat /dev/null | ./sbt clean compile
+      - run:
+          name: Test
+          command: cat /dev/null | ./sbt test
       - save_cache:
           key: sbt-cache
           paths:
