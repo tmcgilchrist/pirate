@@ -23,7 +23,9 @@ jobs:
           key: pirate-{{ checksum "build.sbt" }}
       - run:
           name: Compile
-          command: cat /dev/null | ./sbt clean compile
+          command: cat /dev/null |
+            ./sbt clean compile
+            ./src/test/bin/run
       - run:
           name: Test
           command: |
