@@ -3,3 +3,5 @@ scala:
    - 2.12.10
 jdk:
   - oraclejdk9
+
+script: sbt 'test-only -- xonly'
