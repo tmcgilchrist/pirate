@@ -26,7 +26,9 @@ jobs:
           command: cat /dev/null | ./sbt clean compile
       - run:
           name: Test
-          command: cat /dev/null | ./sbt test
+          command: |
+            ./sbt test
+            ./src/test/bin/run
       - save_cache:
           key: pirate-{{ checksum "build.sbt" }}
           paths:
